@@ -1,0 +1,45 @@
+variant: fcos
+version: 1.0.0
+passwd:
+  users:
+  - name: core
+    ssh_authorized_keys:
+    - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4TcHHa7xpN7lm4LiT0MhJHKnuog7zi96hYe7JSLLKPU3uazcVuLNDoEA+G52sGxGVd9doC/TpJ0rOTaNT4gJ9sEsJ9mNf3CNBsKdNH184nyCaPhFbDJjp+GVCHaspmNG1C6QbMYQw/B0VK61bRwyuWktdI7pWlvBjieJmIS8OGvt2Wrso95Bvu7G17djFIganJFo33P6O5qGNcYWpKgs6T7VvMK15LoMkn/ZGA/RoLMFrIU+QyBDz94qk5as1YYX1EgbUnpJqaLtIpJWECRuSHwSoe8DcZkNhKm2Z9af26Ii2+7Uas9Nlr0Ps52QMwAYgNYJz6UAP7XlzwXfRrqC88fMEbwYAGuX6ICrw89vBVVbC09pfBAtEPBWh56wXje/E8y/HLGODvHSoYmJsHdL+tLHBfHKzZXzJ8IqAlHKFfTMv1CALvy7uYa5lH1Q04huVM2JHclN1h55OSTc9iI6gtkmw2TD+3Kn+XimMmvOwOB0zUPNU21VvkL6w4wyzW/c= blackdn@blackdn-PC"
+  - name: phoenix
+    ssh_authorized_keys:
+    - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4TcHHa7xpN7lm4LiT0MhJHKnuog7zi96hYe7JSLLKPU3uazcVuLNDoEA+G52sGxGVd9doC/TpJ0rOTaNT4gJ9sEsJ9mNf3CNBsKdNH184nyCaPhFbDJjp+GVCHaspmNG1C6QbMYQw/B0VK61bRwyuWktdI7pWlvBjieJmIS8OGvt2Wrso95Bvu7G17djFIganJFo33P6O5qGNcYWpKgs6T7VvMK15LoMkn/ZGA/RoLMFrIU+QyBDz94qk5as1YYX1EgbUnpJqaLtIpJWECRuSHwSoe8DcZkNhKm2Z9af26Ii2+7Uas9Nlr0Ps52QMwAYgNYJz6UAP7XlzwXfRrqC88fMEbwYAGuX6ICrw89vBVVbC09pfBAtEPBWh56wXje/E8y/HLGODvHSoYmJsHdL+tLHBfHKzZXzJ8IqAlHKFfTMv1CALvy7uYa5lH1Q04huVM2JHclN1h55OSTc9iI6gtkmw2TD+3Kn+XimMmvOwOB0zUPNU21VvkL6w4wyzW/c= blackdn@blackdn-PC"
+    groups:
+    - wheel
+    - sudo
+storage:
+  disks:
+  - device: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_hd1
+    wipe_table: true
+    partitions:
+    - label: "disk.storage"
+      number: 0
+      wipe_partition_entry: true
+  filesystems:
+  - path: /var/storage
+    device: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_hd1
+    wipe_filesystem: true
+    format: ext4
+    label: STORAGE
+  files:
+  - path: /etc/hostname
+    overwrite: true
+    mode: 0644
+    contents:
+      inline: fcos-server-test
+systemd:
+  units:
+  - name: var-storage.mount
+    enabled: true
+    contents: |
+      [Mount]
+      What=/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_hd1
+      Where=/var/storage
+      Type=ext4
+
+      [Install]
+      WantedBy=local-fs.target
